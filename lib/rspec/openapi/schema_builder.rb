@@ -36,13 +36,9 @@ class << RSpec::OpenAPI::SchemaBuilder = Object.new
   private
 
   def response_example(record, disposition:)
-    return nil if !example_enabled? || disposition
+    return nil if !record.examples || disposition
 
     record.response_body
-  end
-
-  def example_enabled?
-    RSpec::OpenAPI.enable_example
   end
 
   def build_parameters(record)
@@ -54,7 +50,7 @@ class << RSpec::OpenAPI::SchemaBuilder = Object.new
         in: 'path',
         required: true,
         schema: build_property(try_cast(value)),
-        example: (try_cast(value) if example_enabled?),
+        example: (try_cast(value) if record.examples),
       }.compact
     end
 
@@ -63,7 +59,7 @@ class << RSpec::OpenAPI::SchemaBuilder = Object.new
         name: build_parameter_name(key, value),
         in: 'query',
         schema: build_property(try_cast(value)),
-        example: (try_cast(value) if example_enabled?),
+        example: (try_cast(value) if record.examples),
       }.compact
     end
 
@@ -73,7 +69,7 @@ class << RSpec::OpenAPI::SchemaBuilder = Object.new
         in: 'header',
         required: true,
         schema: build_property(try_cast(value)),
-        example: (try_cast(value) if example_enabled?),
+        example: (try_cast(value) if record.examples),
       }.compact
     end
 
@@ -99,7 +95,7 @@ class << RSpec::OpenAPI::SchemaBuilder = Object.new
       content: {
         normalize_content_type(record.request_content_type) => {
           schema: build_property(record.request_params),
-          example: (build_example(record.request_params) if example_enabled?),
+          example: (build_example(record.request_params) if record.examples),
         }.compact
       }
     }

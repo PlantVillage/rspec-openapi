@@ -57,6 +57,7 @@ class << RSpec::OpenAPI::RecordBuilder = Object.new
       response_body: response_body,
       response_content_type: response.media_type,
       response_content_disposition: response.header["Content-Disposition"],
+      examples: metadata_options[:examples].nil? ? RSpec::OpenAPI.enable_example : metadata_options[:examples],
     ).freeze
   end
 
